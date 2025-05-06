@@ -1,0 +1,28 @@
+[
+    { "id": "Q1",  "text": "How comfortable are you talking to family about what happens after death?",        "domain": "Practical" },
+    { "id": "Q2",  "text": "How comfortable are you discussing funeral rituals?",                           "domain": "Practical" },
+    { "id": "Q3",  "text": "How comfortable are you providing emotional support to someone who is grieving?", "domain": "Experiential" },
+    { "id": "Q4",  "text": "How comfortable are you accessing reliable information about end-of-life care?",  "domain": "Action" },
+    { "id": "Q5",  "text": "How comfortable are you understanding the legal requirements for advance care planning?", "domain": "Knowledge" },
+    { "id": "Q6",  "text": "How comfortable are you talking openly with friends about death?",                "domain": "Experiential" },
+    { "id": "Q7",  "text": "How comfortable are you finding local bereavement support services?",            "domain": "Action" },
+    { "id": "Q8",  "text": "How comfortable are you helping with practical tasks (meals, errands) for someone dying or bereaved?", "domain": "Practical" },
+    { "id": "Q9",  "text": "How comfortable are you organizing funeral or memorial events?",                  "domain": "Practical" },
+    { "id": "Q10", "text": "How comfortable are you reflecting on your own beliefs about death?",             "domain": "Experiential" },
+    { "id": "Q11", "text": "How comfortable are you researching palliative care options online?",             "domain": "Action" },
+    { "id": "Q12", "text": "How comfortable are you reviewing advance directives or living wills?",          "domain": "Knowledge" },
+    { "id": "Q13", "text": "How comfortable are you talking to a health professional about end-of-life care?", "domain": "Action" },
+    { "id": "Q14", "text": "How comfortable are you talking with children about death and dying?",            "domain": "Experiential" },
+    { "id": "Q15", "text": "How comfortable are you using support networks (friends, community) when you grieve?", "domain": "Community" },
+    { "id": "Q16", "text": "How comfortable are you choosing between funeral service options?",              "domain": "Knowledge" },
+    { "id": "Q17", "text": "How comfortable are you contacting legal or financial advisors for end-of-life planning?", "domain": "Knowledge" },
+    { "id": "Q18", "text": "How comfortable are you joining a grief support group?",                         "domain": "Community" },
+    { "id": "Q19", "text": "How comfortable are you using online forums to discuss death literacy topics?",     "domain": "Action" },
+    { "id": "Q20", "text": "How comfortable are you assisting with personal care (bathing, feeding) for someone at end of life?", "domain": "Practical" },
+    { "id": "Q21", "text": "How comfortable are you explaining medical terminology related to dying?",         "domain": "Knowledge" },
+    { "id": "Q22", "text": "How comfortable are you supporting someone’s spiritual or cultural death rites?",    "domain": "Experiential" },
+    { "id": "Q23", "text": "How comfortable are you helping someone create a legacy project (e.g., memory book)?", "domain": "Action" },
+    { "id": "Q24", "text": "How comfortable are you exploring end-of-life financial planning options?",         "domain": "Knowledge" },
+    { "id": "Q25", "text": "How comfortable are you advocating for someone’s end-of-life wishes with professionals?", "domain": "Community" }
+  ]
+  

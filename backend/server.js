@@ -1,9 +1,12 @@
+// server.js
 require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const jwksRsa = require("jwks-rsa");
 const { expressjwt: jwt } = require("express-jwt");
 const { sequelize } = require("./models");
+const quizRouter = require("./routes/quiz");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,46 +27,49 @@ const checkJwt = jwt({
   algorithms: ["RS256"]
 });
 
+// Error handler for unauthorized errors
 app.use((err, req, res, next) => {
-  if (err.name === 'UnauthorizedError') {
-    console.error('Invalid JWT:', err);
-    // Log error details:
-    console.error('Error Type:', err.code);
-    console.error('Error Message:', err.message);
+  if (err.name === "UnauthorizedError") {
+    console.error("Invalid JWT:", err);
+    console.error("Error Code:", err.code);
+    console.error("Error Message:", err.message);
+    return res.status(401).json({ error: "Invalid token" });
   }
   next(err);
 });
 
-// Routes
-app.get("/", (req, res) => res.send("Public API - No Authentication Required"));
-
-app.get("/profile", checkJwt, (req, res) => {
-  res.send({ message: "This is a protected route!", user: req.user });
+// Public route
+app.get("/", (req, res) => {
+  res.send("Public API - No Authentication Required");
 });
 
-// Database and Server Initialization
+// Protected profile route
+app.get("/profile", checkJwt, (req, res) => {
+  res.json({ message: "This is a protected route!", user: req.user });
+});
+
+// Quiz routes (no authentication required)
+app.use("/quiz", quizRouter);
+
+// Initialize database and start server
 async function startServer() {
   try {
-    // Test database connection
     await sequelize.authenticate();
     console.log("Database connection established");
 
-    // Sync models (use { alter: true } in development only)
     await sequelize.sync({
-      alter: process.env.NODE_ENV === "development" // Careful in production
+      alter: process.env.NODE_ENV === "development"  // only alter in dev
     });
     console.log("Database models synchronized");
 
-    // Start server
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
     });
-  } catch (error) {
-    console.error("Server startup failed:", error);
+  } catch (err) {
+    console.error("Server startup failed:", err);
     process.exit(1);
   }
 }
 
-// Start the application
 startServer();
