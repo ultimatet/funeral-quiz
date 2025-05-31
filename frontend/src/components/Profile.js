@@ -21,7 +21,6 @@ const Profile = () => {
     const [reports, setReports] = useState([]); // Store up to 3 most recent reports
     const [selectedReportIdx, setSelectedReportIdx] = useState(0); // Index of report to display
 
-
     useEffect(() => {
         const fetchRole = async () => {
             if (isAuthenticated && user?.email) {
@@ -129,10 +128,10 @@ const Profile = () => {
         scales: {
             r: {
                 suggestedMin: 0,
-                suggestedMax: 10,
+                suggestedMax: 5,
                 ticks: {
                     beginAtZero: true,
-                    stepSize: 2,
+                    stepSize: 1,
                     font: { size: 12 },
                 },
                 pointLabels: {
@@ -145,53 +144,99 @@ const Profile = () => {
     return (
         isAuthenticated && (
             <div className="profile-container">
-                <div className="container-bg">
+                {/* Profile info stays on top */}
+                <div className="profile-top">
                     <div className="profile">
                         <h2>{user.name}</h2>
                         <p>{user.email}</p>
                         <p>Role: {userRole}</p>
                     </div>
-                    <div className="report-container">
-                        <div className="report-card">
-                            <h2>Reports</h2>
-                            {/* Report selector */}
-                            {reports.length > 1 && (
-                                <div style={{ marginBottom: "1rem" }}>
-                                    <label htmlFor="report-select">
-                                        <b>Select Report:</b>{" "}
-                                    </label>
-                                    <select
-                                        id="report-select"
-                                        value={selectedReportIdx}
-                                        onChange={(e) =>
-                                            setSelectedReportIdx(Number(e.target.value))
-                                        }
-                                    >
-                                        {reports.map((r, idx) => (
-                                            <option key={r.id} value={idx}>
-                                                {`Report on (${new Date(
-                                                    r.createdAt
-                                                ).toLocaleString()})`}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            )}
-                            {selectedReport ? (
-                                <>
-                                    <p>
-                                        Date: {new Date(selectedReport.createdAt).toLocaleString()}
-                                    </p>
-                                    {/* Radar Chart Section */}
-                                    <div className="radar-chart">
-                                        <Radar data={radarData} options={radarOptions} />
-                                    </div>
-                                </>
-                            ) : (
-                                <p>No reports found.</p>
-                            )}
+                </div>
+                {/* Centered report card with selector, chart, and benchmark */}
+                <div className="profile-report-card">
+                    <h2>Reports</h2>
+                    {/* Report selector */}
+                    {reports.length > 1 && (
+                        <div className="profile-report-selector">
+                            <label htmlFor="report-select">
+                                <b>Select Report:</b>{" "}
+                            </label>
+                            <select
+                                id="report-select"
+                                value={selectedReportIdx}
+                                onChange={(e) => setSelectedReportIdx(Number(e.target.value))}
+                            >
+                                {reports.map((r, idx) => (
+                                    <option key={r.id} value={idx}>
+                                        {`Report on (${new Date(r.createdAt).toLocaleString()})`}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
-                    </div>
+                    )}
+                    {selectedReport ? (
+                        <div className="profile-report-view">
+                            <div className="chart-container">
+                                <h3>Score Visualization</h3>
+                                <div className="responsive-radar">
+                                    <Radar data={radarData} options={radarOptions} />
+                                </div>
+                            </div>
+                            <div className="detailed-report">
+                                <h3>Detailed Analysis</h3>
+                                {selectedReport.report &&
+                                    Object.entries(selectedReport.report).map(([domain, value]) => {
+                                        const score =
+                                            value &&
+                                            typeof value === "object" &&
+                                            value.score !== undefined
+                                                ? value.score
+                                                : value;
+                                        const againstBenchmark =
+                                            value && typeof value === "object"
+                                                ? value.againstBenchmark
+                                                : undefined;
+                                        const meaning =
+                                            value && typeof value === "object"
+                                                ? value.meaning
+                                                : undefined;
+                                        const action =
+                                            value && typeof value === "object"
+                                                ? value.action
+                                                : undefined;
+                                        return (
+                                            <details key={domain} className="report-domain">
+                                                <summary className="domain-summary">
+                                                    <h4>{domain}</h4>
+                                                    <span className="score-badge">
+                                                        {typeof score === "number" && !isNaN(score)
+                                                            ? score.toFixed(1)
+                                                            : "-"}
+                                                        /5.0
+                                                    </span>
+                                                </summary>
+                                                <div className="domain-content">
+                                                    <p>
+                                                        <strong>How you scored:</strong>{" "}
+                                                        {againstBenchmark || "-"}
+                                                    </p>
+                                                    <p>
+                                                        <strong>What this means:</strong>{" "}
+                                                        {meaning || "-"}
+                                                    </p>
+                                                    <p>
+                                                        <strong>What you can do:</strong>{" "}
+                                                        {action || "-"}
+                                                    </p>
+                                                </div>
+                                            </details>
+                                        );
+                                    })}
+                            </div>
+                        </div>
+                    ) : (
+                        <p>No reports found.</p>
+                    )}
                 </div>
             </div>
         )

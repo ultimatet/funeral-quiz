@@ -128,7 +128,7 @@ const Report = ({ report, onRetake }) => {
         scales: {
             r: {
                 suggestedMin: 0,
-                suggestedMax: 10, // max score per domain is 10
+                suggestedMax: 5, // max score per domain is 10
                 ticks: {
                     beginAtZero: true,
                 },
@@ -176,7 +176,7 @@ const Report = ({ report, onRetake }) => {
                                             {typeof score === "number" && !isNaN(score)
                                                 ? score.toFixed(1)
                                                 : "-"}
-                                            /10
+                                            /5.0
                                         </span>
                                     </summary>
                                     <div className="domain-content">
