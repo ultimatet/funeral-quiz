@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Radar } from "react-chartjs-2";
-import supabase from "../lib/supabaseClient"; 
 import {
     Chart as ChartJS,
     RadialLinearScale,
@@ -21,24 +20,6 @@ const Profile = () => {
     const [userRole, setUserRole] = useState(null);
     const [reports, setReports] = useState([]); // Store up to 3 most recent reports
     const [selectedReportIdx, setSelectedReportIdx] = useState(0); // Index of report to display
-
-    useEffect(() => {
-        async function fetchUserRole() {
-            // Fetch the user's role from the users table
-            const { data, error } = await supabase
-                .from("users")
-                .select("role")
-                .eq("auth0_email", user.email)
-                .single();
-            if (error) {
-                console.error("Failed to fetch user role from Supabase:", error);
-            } else {
-                setUserRole(data.role);
-                console.log("User role:", data.role);
-            }
-        }
-        fetchUserRole();
-    }, [user]);
 
 
     useEffect(() => {

@@ -177,6 +177,7 @@ const questionController = {
                     id: result.id,
                     answers: result.answers,
                     scores: result.categoryScores,
+                    report: questionController.buildReport(result.categoryScores),
                     createdAt: result.createdAt,
                 })),
             });

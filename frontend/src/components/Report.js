@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Radar } from "react-chartjs-2";
-import supabase from "../lib/supabaseClient";
-import { getBenchmarkInfo } from "../lib/benchmarkLookup";
 
 import "./Report.css";
 
@@ -11,49 +9,7 @@ const Report = ({ report, onRetake }) => {
     const { user } = useAuth0();
     const [scores, setScores] = useState(null);
 
-    // useEffect(() => {
-    //     const fetchResults = async () => {
-    //         if (!user?.email) return;
-
-    //         try {
-    //             // Step 1: Get the user by email (assuming you store Auth0 email in Supabase users table)
-    //             const { data: userData, error: userError } = await supabase
-    //                 .from("users")
-    //                 .select("id")
-    //                 .eq("auth0_email", user.email)
-    //                 .single();
-
-    //             if (userError || !userData) {
-    //                 console.warn("No user found for email.");
-    //                 return;
-    //             }
-
-    //             const userId = userData.id;
-
-    //             // Step 2: Get quiz results for this user
-    //             const { data: results, error: resultsError } = await supabase
-    //                 .from("quiz_results")
-    //                 .select("id, answers, categoryScores, createdAt")
-    //                 .eq("userId", userId)
-    //                 .order("createdAt", { ascending: false });
-
-    //             if (resultsError || !results || results.length === 0) {
-    //                 console.warn("No quiz results found for user.");
-    //                 return;
-    //             }
-
-    //             // Use the most recent result
-    //             const latestResult = results[0];
-    //             setScores(latestResult.categoryScores);
-    //         } catch (err) {
-    //             console.error("Error fetching results from Supabase:", err);
-    //         }
-    //     };
-
-    //     fetchResults();
-    // }, [user]);
-
-    // Fetch the user's latest quiz scores from the backend
+    // Fetch the user's latest quiz report (with benchmark) from the backend
     useEffect(() => {
         const fetchResults = async () => {
             try {
@@ -67,7 +23,7 @@ const Report = ({ report, onRetake }) => {
                     return;
                 }
 
-                // Step 2: Get quiz results using the user ID
+                // Step 2: Get quiz results using the user ID (with benchmark report)
                 const resultsResponse = await fetch(
                     `http://localhost:5000/question/results/${userData.id}`
                 );
@@ -76,7 +32,7 @@ const Report = ({ report, onRetake }) => {
                 if (resultsData.results && resultsData.results.length > 0) {
                     // Get the most recent result (first in array since ordered by createdAt DESC)
                     const latestResult = resultsData.results[0];
-                    setScores(latestResult.scores);
+                    setScores(latestResult.report || latestResult.scores); // Use report if present
                 } else {
                     console.warn("No quiz results found for user.");
                 }
@@ -119,7 +75,11 @@ const Report = ({ report, onRetake }) => {
                   {
                       label: "Death Literacy Score",
                       data: Object.values(scores).map((v) =>
-                          typeof v === "number" && !isNaN(v) ? Number(v.toFixed(2)) : 0
+                          typeof v.score === "number" && !isNaN(v.score)
+                              ? Number(v.score.toFixed(2))
+                              : typeof v === "number" && !isNaN(v)
+                              ? Number(v.toFixed(2))
+                              : 0
                       ),
                       backgroundColor: Object.keys(scores).map(
                           (_, i) => domainColors[i % domainColors.length]
@@ -194,8 +154,20 @@ const Report = ({ report, onRetake }) => {
                 <div className="detailed-report">
                     <h3>Detailed Analysis</h3>
                     {scores &&
-                        Object.entries(scores).map(([domain, score]) => {
-                            const bench = getBenchmarkInfo(domain, score);
+                        Object.entries(scores).map(([domain, value]) => {
+                            // If backend returns a report object, use its fields
+                            const score =
+                                value && typeof value === "object" && value.score !== undefined
+                                    ? value.score
+                                    : value;
+                            const againstBenchmark =
+                                value && typeof value === "object"
+                                    ? value.againstBenchmark
+                                    : undefined;
+                            const meaning =
+                                value && typeof value === "object" ? value.meaning : undefined;
+                            const action =
+                                value && typeof value === "object" ? value.action : undefined;
                             return (
                                 <details key={domain} className="report-domain">
                                     <summary className="domain-summary">
@@ -209,14 +181,14 @@ const Report = ({ report, onRetake }) => {
                                     </summary>
                                     <div className="domain-content">
                                         <p>
-                                            <strong>How you scored:</strong> {bench?.label || "-"}
+                                            <strong>How you scored:</strong>{" "}
+                                            {againstBenchmark || "-"}
                                         </p>
                                         <p>
-                                            <strong>What this means:</strong>{" "}
-                                            {bench?.meaning || "-"}
+                                            <strong>What this means:</strong> {meaning || "-"}
                                         </p>
                                         <p>
-                                            <strong>What you can do:</strong> {bench?.action || "-"}
+                                            <strong>What you can do:</strong> {action || "-"}
                                         </p>
                                     </div>
                                 </details>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import supabase from "../lib/supabaseClient";
 import Report from "./Report";
 import "./Quiz.css";
 
@@ -30,31 +29,6 @@ const Quiz = () => {
             })
             .catch((err) => console.error("Failed to fetch quiz questions:", err));
     }, []);
-
-    // // 1) Fetch questions on mount from Supabase
-    // useEffect(() => {
-    //     async function fetchQuestions() {
-    //         // Import your supabase client
-    //         const { data, error } = await supabase
-    //             .from("questions")
-    //             .select("id, question_text, category");
-    //         if (error) {
-    //             console.error("Failed to fetch quiz questions from Supabase:", error);
-    //             setQuestions([]);
-    //         } else {
-    //             // Normalize to always use q.id as a string and q.category, and set q.question_text for frontend compatibility
-    //             const normalized = data.map((q) => ({
-    //                 ...q,
-    //                 id: typeof q.id === "number" ? String(q.id) : q.id,
-    //                 question_text: q.question_text || q.text || q.questionText || q.prompt || "",
-    //                 category: q.category || q.domain || "",
-    //             }));
-    //             setQuestions(normalized);
-    //             console.log("Fetched questions:", normalized);
-    //         }
-    //     }
-    //     fetchQuestions();
-    // }, []);
 
     // 2) Record an answer (1–5)
     const handleSelect = (value) => {
