@@ -13,7 +13,7 @@ const Quiz = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    // 1) Fetch questions on mount
+    // Fetch questions on mount
     useEffect(() => {
         fetch("/question/")
             .then((res) => res.json())
@@ -30,13 +30,13 @@ const Quiz = () => {
             .catch((err) => console.error("Failed to fetch quiz questions:", err));
     }, []);
 
-    // 2) Record an answer (1–5)
+    //Record an answer (1–5)
     const handleSelect = (value) => {
         const q = questions[step];
         setAnswers((a) => ({ ...a, [q.id]: value }));
     };
 
-    // 3) Move next or submit
+    // Move next or submit
     const handleNext = () => {
         if (step < questions.length - 1) {
             setStep((s) => s + 1);
@@ -44,7 +44,7 @@ const Quiz = () => {
             submitQuiz();
         }
     };
-    // 4) Submit answers to backend
+    // Submit answers to backend
     const submitQuiz = async () => {
         if (!user?.email) {
             console.error("No authenticated user found");
@@ -70,73 +70,13 @@ const Quiz = () => {
             setLoading(false);
         }
     };
-    //     // 1. Fetch userId from Supabase using the email
-    //     const { data: userData, error: userError } = await supabase
-    //         .from("users")
-    //         .select("id")
-    //         .eq("auth0_email", user.email)
-    //         .single();
 
-    //     if (userError || !userData?.id) {
-    //         throw new Error("User not found in Supabase: " + userError?.message);
-    //     }
 
-    //     const userId = userData.id;
-
-    //     // 2. Transform answers from { qid: value } to array of { questionId, selectedValue }
-    //     const transformedAnswers = Object.entries(answers).map(
-    //         ([questionId, selectedValue]) => ({
-    //             questionId,
-    //             selectedValue,
-    //         })
-    //     );
-
-    //     // 3. Compute category scores (simple average per category for now)
-    //     const categoryScores = {};
-    //     questions.forEach((q) => {
-    //         const val = answers[q.id];
-    //         if (val) {
-    //             categoryScores[q.category] = categoryScores[q.category] || [];
-    //             categoryScores[q.category].push(val);
-    //         }
-    //     });
-
-    //     Object.keys(categoryScores).forEach((cat) => {
-    //         const values = categoryScores[cat];
-    //         const average = values.reduce((sum, val) => sum + val, 0) / values.length;
-    //         categoryScores[cat] = Number(average.toFixed(2));
-    //     });
-
-    //     // 4. Submit to Supabase `quiz_results` table
-    //     const { data: resultData, error: resultError } = await supabase
-    //         .from("quiz_results")
-    //         .insert([
-    //             {
-    //                 userId,
-    //                 answers: transformedAnswers,
-    //                 categoryScores,
-    //             },
-    //         ])
-    //         .select();
-
-    //     if (resultError) {
-    //         throw new Error("Failed to insert quiz result: " + resultError.message);
-    //     }
-
-    //     console.log("Quiz result submitted:", resultData);
-    //     setReport({ categoryScores }); // or use resultData[0] if you want full result
-    // } catch (err) {
-    //     console.error("Quiz submission failed:", err);
-    // } finally {
-    //     setLoading(false);
-    // }
-
-    // 5) Render states
+    // Render states
     if (!questions.length) return <div>Loading questions…</div>;
     if (report)
         return (
             <Report
-                report={report}
                 onRetake={() => {
                     setReport(null);
                     setAnswers({});

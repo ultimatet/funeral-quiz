@@ -5,7 +5,7 @@ import { Radar } from "react-chartjs-2";
 import "./Report.css";
 
 // Report component displays the user's quiz results, including a radar chart and detailed analysis
-const Report = ({ report, onRetake }) => {
+const Report = ({ onRetake }) => {
     const { user } = useAuth0();
     const [scores, setScores] = useState(null);
 

@@ -151,7 +151,7 @@ const questionController = {
                     return true;
                 }) || {};
             report[domain] = {
-                score, // 0–10
+                score, // 0–5
                 againstBenchmark: bucket.label || "", // "Lower"/"Similar"/"Higher"
                 meaning: bucket.meaning || "", // "What This Means" text
                 action: bucket.action || "", // "What You Can Do" text
